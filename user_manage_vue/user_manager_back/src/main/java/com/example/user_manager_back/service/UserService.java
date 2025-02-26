@@ -3,11 +3,17 @@ package com.example.user_manager_back.service;
 import com.example.user_manager_back.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-/**
-* @author 华硕
-* @description 针对表【user(用户)】的数据库操作Service
-* @createDate 2025-02-26 16:49:54
-*/
-public interface UserService extends IService<User> {
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
 
+public interface UserService extends IService<User> {
+    /**
+     * 用户注册
+     * @param userAccount 用户账号
+     * @param userPassword 用户密码
+     * @param checkCode 校验密码
+     * @return 注册结果
+     */
+    long userRegister(String userAccount, String userPassword, String checkCode);
+    User doLogin(String userAccount, String userPassword, HttpServletRequest request);
 }
