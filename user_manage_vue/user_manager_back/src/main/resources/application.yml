@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: user_manege
+  datasource:
+    url: jdbc:mysql://localhost:3306/wj_project
+    username: root
+    password: 619820
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  port: 8080
