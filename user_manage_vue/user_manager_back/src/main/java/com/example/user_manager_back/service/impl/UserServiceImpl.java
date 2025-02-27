@@ -1,8 +1,8 @@
 package com.example.user_manager_back.service.impl;
-import java.util.Date;
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.user_manager_back.common.ErrorCode;
+import com.example.user_manager_back.exception.BusinessException;
 import com.example.user_manager_back.model.domain.User;
 import com.example.user_manager_back.service.UserService;
 import com.example.user_manager_back.mapper.UserMapper;
@@ -31,19 +31,19 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkCode) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword) {
         //校验
         //1 都不为空
-        if (userAccount == null || userPassword == null || checkCode == null) {
-            return-1;
+        if (userAccount == null || userPassword == null || checkPassword == null) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         //2用户名大于4
         if (userAccount.length() < 4) {
-            return-1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         //3密码长度大于8
         if (userPassword.length() < 8) {
-            return-1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短");
         }
         //5账户不包含特殊字符
 //        Pattern pattern = Pattern.compile("^[a-zA-Z0-9_]+$");
@@ -52,18 +52,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String validPattern = "^[a-zA-Z0-9_]+$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (!matcher.matches()) {
-            return -1;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户包含特殊字符");
         }
         //6密码和校验密码相同
-        if (!userPassword.equals(checkCode)) {
-            return -1;
+        if (!userPassword.equals(checkPassword)) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码和校验密码不相同");
         }
         //4账户不能重复
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userAccount", userAccount);
         long count = this.count(queryWrapper);
         if (count > 0) {
-            return -1;
+            throw new BusinessException(ErrorCode.USER_EXIST, "账户已存在");
         }
 
         //对密码进行加密
@@ -83,21 +83,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         //1.校验
         //1.非空
         if (userAccount == null || userPassword == null) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         //2.账户长度不小于4位
         if (userAccount.length() < 4) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户过短");
         }
         //3.密码长度不小于8位
         if (userPassword.length() < 8) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短");
         }
         //4.账户不包含特殊字符
         String validPattern = "^[a-zA-Z0-9_]+$";
         Matcher matcher = Pattern.compile(validPattern).matcher(userAccount);
         if (!matcher.matches()) {
-            return null;
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "账户包含特殊字符");
         }
         //2.校验密码是否输入正确
         String encryptPassword = DigestUtils.md5DigestAsHex((userAccount + SALT).getBytes(StandardCharsets.UTF_8));
@@ -107,7 +107,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = this.getOne(queryWrapper);
         if (user == null) {
             log.info("login failed , userAccount not match userPassword");
-            return null;
+            throw new BusinessException(ErrorCode.USER_LOGIN_ERROR, "账户或密码错误");
         }
 
         //3.用户脱敏
@@ -118,6 +118,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         return safeUser;
     }
 
+    @Override
     public User getSafeUser(User originUser) {
         if (originUser == null) {
             return null;
@@ -134,6 +135,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         safeUser.setCreateTime(originUser.getCreateTime());
         safeUser.setUserRole(originUser.getUserRole());
         return safeUser;
+    }
+
+    @Override
+    public int userLogout(HttpServletRequest request) {
+        //移除登录态
+        request.getSession().removeAttribute(USER_LOGIN_STATUS);
+        return 0;
     }
 }
 
