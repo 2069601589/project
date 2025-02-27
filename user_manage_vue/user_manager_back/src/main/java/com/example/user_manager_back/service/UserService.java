@@ -3,7 +3,6 @@ package com.example.user_manager_back.service;
 import com.example.user_manager_back.model.domain.User;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 
 public interface UserService extends IService<User> {
@@ -15,5 +14,5 @@ public interface UserService extends IService<User> {
      * @return 注册结果
      */
     long userRegister(String userAccount, String userPassword, String checkCode);
-    User doLogin(String userAccount, String userPassword, HttpServletRequest request);
+    User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 }
