@@ -15,6 +15,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.example.user_manager_back.contant.UserContant.USER_LOGIN_STATUS;
+
 /**
 * @author 华硕
 * @description 针对表【user(用户)】的数据库操作Service实现
@@ -24,9 +26,9 @@ import java.util.regex.Pattern;
 @Slf4j
 public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     implements UserService{
-
+    //盐值
     private static final String SALT = "wj_project";
-    private static final String USER_LOGIN_STATUS ="userLoginStatus";
+
 
     @Override
     public long userRegister(String userAccount, String userPassword, String checkCode) {
@@ -78,16 +80,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
     @Override
     public User userLogin(String userAccount, String userPassword, HttpServletRequest request) {
-//        1.校验用户账户和密码是否合法
-    //         1.非空
-    //         2.账户长度不小于4位
-    //         3.密码就不小于8位吧
-    //         4.账户不包含特殊字符
-//        2.校验密码是否输入正确，要和数据库中的密文密码去对北比
-//        3.我们要记录用户的登录态(session),将其存到服务器上
-//                (用后端SpringBoot框架封装的服务器tomcat去记录)
-//        cookie
-//        4.返回用户信息（脱敏）
         //1.校验
         //1.非空
         if (userAccount == null || userPassword == null) {
@@ -119,18 +111,28 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         }
 
         //3.用户脱敏
-        User safeUser = new User();
-        safeUser.setId(user.getId());
-        safeUser.setUsername(user.getUsername());
-        safeUser.setUserAccount(user.getUserAccount());
-        safeUser.setAvatarUrl(user.getAvatarUrl());
-        safeUser.setGender(user.getGender());
-        safeUser.setPhone(user.getPhone());
-        safeUser.setEmail(user.getEmail());
-        safeUser.setUserStatus(user.getUserStatus());
-        safeUser.setCreateTime(user.getCreateTime());
+        User safeUser = getSafeUser(user);
+
         //4.记录用户登录态
         request.getSession().setAttribute(USER_LOGIN_STATUS, safeUser);
+        return safeUser;
+    }
+
+    public User getSafeUser(User originUser) {
+        if (originUser == null) {
+            return null;
+        }
+        User safeUser = new User();
+        safeUser.setId(originUser.getId());
+        safeUser.setUsername(originUser.getUsername());
+        safeUser.setUserAccount(originUser.getUserAccount());
+        safeUser.setAvatarUrl(originUser.getAvatarUrl());
+        safeUser.setGender(originUser.getGender());
+        safeUser.setPhone(originUser.getPhone());
+        safeUser.setEmail(originUser.getEmail());
+        safeUser.setUserStatus(originUser.getUserStatus());
+        safeUser.setCreateTime(originUser.getCreateTime());
+        safeUser.setUserRole(originUser.getUserRole());
         return safeUser;
     }
 }
