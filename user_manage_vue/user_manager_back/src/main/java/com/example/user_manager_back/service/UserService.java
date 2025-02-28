@@ -10,10 +10,10 @@ public interface UserService extends IService<User> {
      * 用户注册
      * @param userAccount 用户账号
      * @param userPassword 用户密码
-     * @param checkCode 校验密码
+     * @param checkPassword 校验密码
      * @return 注册结果
      */
-    long userRegister(String userAccount, String userPassword, String checkCode);
+    long userRegister(String userAccount, String userPassword, String checkPassword);
     User userLogin(String userAccount, String userPassword, HttpServletRequest request);
 
     User getSafeUser(User originUser);

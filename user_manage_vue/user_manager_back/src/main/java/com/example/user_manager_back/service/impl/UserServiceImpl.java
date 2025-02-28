@@ -42,7 +42,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
         }
         //3密码长度大于8
-        if (userPassword.length() < 8) {
+        if (userPassword.length() < 8 || checkPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "密码过短");
         }
         //5账户不包含特殊字符
@@ -73,6 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         User user = new User();
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
+        user.setUserRole(0);
         boolean result=this.save(user);
         if(!result) return -1;
         return user.getId();
