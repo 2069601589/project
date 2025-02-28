@@ -8,7 +8,7 @@
         <router-view />
       </a-layout-content>
       <a-layout-footer class="footer">
-        <a href="https://github.com/">github</a>
+        <a href="https://github.com/2069601589/project">github</a>
       </a-layout-footer>
     </a-layout>
   </div>
