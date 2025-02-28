@@ -76,9 +76,11 @@ public class UserController {
         if(!isAdmin(request))
             throw new BusinessException(ErrorCode.NO_PERMISSION);
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        if(username != null) {
-            queryWrapper.like("username", username);
-        }
+//        if(username != null) {
+//            queryWrapper.like("username", username);
+//        }
+        queryWrapper.like("username", username);
+
         List<User> user= userService.list(queryWrapper);
         return ResultUtils.success(user);
     }
