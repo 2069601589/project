@@ -5,10 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="714cdbf9-a894-471c-9284-77e8de48205e" name="更改" comment="基本完成，可填充优化">
+      <change beforePath="$PROJECT_DIR$/../../user-maneger-react/user_manager_back/src/main/resources/application.yml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/node_modules/.cache/eslint/1d95d1a3.json" beforeDir="false" afterPath="$PROJECT_DIR$/node_modules/.cache/eslint/1d95d1a3.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/user/UserLoginPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user/UserLoginPage.vue" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/pages/user/UserRegisterPage.vue" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/user/UserRegisterPage.vue" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -126,7 +124,7 @@
       <workItem from="1740727797411" duration="22000" />
       <workItem from="1740727822414" duration="8172000" />
       <workItem from="1740800424826" duration="4078000" />
-      <workItem from="1740882802622" duration="3077000" />
+      <workItem from="1740882802622" duration="4000000" />
     </task>
     <task id="LOCAL-00001" summary="登陆测试完成，注册测试有bug">
       <option name="closed" value="true" />
