@@ -49,6 +49,8 @@
         <a-button type="primary" html-type="submit">注册</a-button>
       </a-form-item>
     </a-form>
+    >
+    <div style="height: 220px"></div>
   </div>
 </template>
 
@@ -80,7 +82,7 @@ const handleSubmit = async () => {
       replace: true,
     });
   } else {
-    message.error("注册失败");
+    message.error(res.data.message || "注册失败");
   }
 };
 </script>

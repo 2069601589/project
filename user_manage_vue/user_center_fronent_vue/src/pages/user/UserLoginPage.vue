@@ -36,6 +36,7 @@
         <a-button type="primary" html-type="submit">登陆</a-button>
       </a-form-item>
     </a-form>
+    <div style="height: 300px"></div>
   </div>
 </template>
 
@@ -59,6 +60,10 @@ const loginUserStore = useLoginUserStore();
  * @param data
  */
 const handleSubmit = async () => {
+  if (form.userPassword.length < 8) {
+    message.error("密码长度至少8位");
+    return;
+  }
   const res = await userLogin(form);
   // 登录成功，跳转到主页
   if (res.data.code === 0 && res.data.data) {
