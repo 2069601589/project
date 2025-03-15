@@ -23,7 +23,7 @@ void testHotData() {
     const int HOT_KEYS = 20; //热点数据的数量
     const int COLD_KEYS = 5000; //冷数据数量
 
-    YCache::YLFuCache<int, std::string> lfu(CAPACITY);
+    YCache::YHashLRuCache<int, std::string> lfu(CAPACITY,10);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::vector<int> hits(1, 0);
@@ -67,7 +67,7 @@ void testLoopData() {
     const int LOOP_SIZE = 500; //循环次数
     const int OPERATIONS = 500000; //操作次数
 
-    YCache::YLFuCache<int, std::string> lfu(CAPACITY);
+    YCache::YHashLRuCache<int, std::string> lfu(CAPACITY,10);
     std::random_device rd;
     std::mt19937 gen(rd());
     std::vector<int> hits(1, 0);

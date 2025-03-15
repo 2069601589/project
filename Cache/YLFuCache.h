@@ -231,19 +231,35 @@ namespace YCache {
         if(minFreq_==INT8_MAX) minFreq_=1;
     }
 
+    //哈希分片优化
     template<typename Key, typename Value>
     class YHashLRuCache{
     public:
+        YHashLRuCache(int capacity,int sliceNum,int maxAverageNum=10):capacity_(capacity),sliceNum_(sliceNum) {
+            for(int i=0;i<sliceNum_;++i) {
+                hashlfucaches_.emplace_back(std::make_unique<YLFuCache<Key,Value>>(capacity/sliceNum,maxAverageNum));
+            }
+        }
         void put(Key key,Value value) {
-            int hashValue = Hash(key);
+            size_t hashValue = Hash(key)%sliceNum_;
             hashlfucaches_[hashValue]->put(key,value);
         }
+        bool get(Key key,Value &value) {
+            size_t hashValue = Hash(key)%sliceNum_;
+            return hashlfucaches_[hashValue]->get(key,value);
+        }
+        Value get(Key key) {
+            Value value;
+            get(key,value);
+            return value;
+        }
     private:
-        void Hash(Key key) {
+        int Hash(Key key) {
             std::hash<Key> hash;
             return hash(key);
         }
     private:
+        size_t capacity_;
         int sliceNum_;
         std::vector<std::unique_ptr<YLFuCache<Key,Value>>> hashlfucaches_;
     };
