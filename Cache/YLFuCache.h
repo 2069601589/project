@@ -6,6 +6,8 @@
 
 namespace YCache {
     template<typename Key, typename Value>
+    class YLFuCache;
+    template<typename Key, typename Value>
     //频次双向链表
     class FreList {
     private:
@@ -28,7 +30,7 @@ namespace YCache {
         NodePtr head_; // 假头结点
         NodePtr tail_; // 假尾结点
     public:
-        explicit FreList(int n) : head_(std::make_shared<Node>()), tail_(std::make_shared<Node>(), freq_(n)) {
+        explicit FreList(int n) : freq_(n),head_(std::make_shared<Node>()), tail_(std::make_shared<Node>()) {
             head_->next = tail_;
             tail_->pre = head_;
         }
@@ -49,7 +51,7 @@ namespace YCache {
             if (!node || !head_ || !tail_) return;
             node->pre->next = node->next;
             node->next->pre = node->pre;
-            node->pre == nullptr;
+            node->pre = nullptr;
             node->next = nullptr;
         }
 
@@ -57,6 +59,8 @@ namespace YCache {
             if (isEmpty()) return nullptr;
             return head_->next;
         }
+
+        friend class YLFuCache<Key, Value>;
     };
 
     template<typename Key, typename Value>
@@ -66,6 +70,7 @@ namespace YCache {
         using NodePtr = std::shared_ptr<Node>;
         using NodeMap = std::unordered_map<Key, NodePtr>;
         YLFuCache(): YLFuCache(10, 10) {};
+        explicit YLFuCache(int capacity) : YLFuCache(capacity, 10) {}
         YLFuCache(int capacity, int maxAverageNum) : capacity_(capacity), maxAverageNum_(maxAverageNum), curAverageNum_(0), curTotalNum_(0), minFreq_(1) {}
         ~YLFuCache()  override = default;
         void put(Key key,Value value) override {
@@ -225,4 +230,21 @@ namespace YCache {
         }
         if(minFreq_==INT8_MAX) minFreq_=1;
     }
+
+    template<typename Key, typename Value>
+    class YHashLRuCache{
+    public:
+        void put(Key key,Value value) {
+            int hashValue = Hash(key);
+            hashlfucaches_[hashValue]->put(key,value);
+        }
+    private:
+        void Hash(Key key) {
+            std::hash<Key> hash;
+            return hash(key);
+        }
+    private:
+        int sliceNum_;
+        std::vector<std::unique_ptr<YLFuCache<Key,Value>>> hashlfucaches_;
+    };
 }

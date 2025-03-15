@@ -27,7 +27,7 @@
 					[
 						0
 					],
-					"name" : "Cache",
+					"name" : "YCache",
 					"targetIndexes" : 
 					[
 						0
@@ -38,9 +38,9 @@
 			[
 				{
 					"directoryIndex" : 0,
-					"id" : "Cache::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-Cache-Debug-36bc7216c660da23a4dd.json",
-					"name" : "Cache",
+					"id" : "main::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-main-Debug-2edcded8f357168f4379.json",
+					"name" : "main",
 					"projectIndex" : 0
 				}
 			]

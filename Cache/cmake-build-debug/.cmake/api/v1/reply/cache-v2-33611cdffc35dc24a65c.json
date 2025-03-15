@@ -875,7 +875,7 @@
 				}
 			],
 			"type" : "STATIC",
-			"value" : "Cache"
+			"value" : "YCache"
 		},
 		{
 			"name" : "CMAKE_RANLIB",
@@ -1295,6 +1295,42 @@
 		},
 		{
 			"name" : "Cache_SOURCE_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/wj/Desktop/code/project/Cache"
+		},
+		{
+			"name" : "YCache_BINARY_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "C:/Users/wj/Desktop/code/project/Cache/cmake-build-debug"
+		},
+		{
+			"name" : "YCache_IS_TOP_LEVEL",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "Value Computed by CMake"
+				}
+			],
+			"type" : "STATIC",
+			"value" : "ON"
+		},
+		{
+			"name" : "YCache_SOURCE_DIR",
 			"properties" : 
 			[
 				{

@@ -11,7 +11,7 @@
 # =============================================================================
 
 # =============================================================================
-# Project: Cache
+# Project: YCache
 # Configurations: Debug
 # =============================================================================
 
@@ -41,49 +41,37 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = C$:/Users/wj/Desktop/code/project/Cache/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target Cache
+# Object build statements for EXECUTABLE target main
 
 
 #############################################
-# Order-only phony target for Cache
+# Order-only phony target for main
 
-build cmake_object_order_depends_target_Cache: phony || .
+build cmake_object_order_depends_target_main: phony || .
 
-build CMakeFiles/Cache.dir/main.cpp.obj: CXX_COMPILER__Cache_unscanned_Debug C$:/Users/wj/Desktop/code/project/Cache/main.cpp || cmake_object_order_depends_target_Cache
-  DEP_FILE = CMakeFiles\Cache.dir\main.cpp.obj.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\Cache.dir
-  OBJECT_FILE_DIR = CMakeFiles\Cache.dir
-
-build CMakeFiles/Cache.dir/YCachePolicy.cpp.obj: CXX_COMPILER__Cache_unscanned_Debug C$:/Users/wj/Desktop/code/project/Cache/YCachePolicy.cpp || cmake_object_order_depends_target_Cache
-  DEP_FILE = CMakeFiles\Cache.dir\YCachePolicy.cpp.obj.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\Cache.dir
-  OBJECT_FILE_DIR = CMakeFiles\Cache.dir
-
-build CMakeFiles/Cache.dir/YLFuCache.cpp.obj: CXX_COMPILER__Cache_unscanned_Debug C$:/Users/wj/Desktop/code/project/Cache/YLFuCache.cpp || cmake_object_order_depends_target_Cache
-  DEP_FILE = CMakeFiles\Cache.dir\YLFuCache.cpp.obj.d
-  FLAGS = -g -std=gnu++20 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\Cache.dir
-  OBJECT_FILE_DIR = CMakeFiles\Cache.dir
+build CMakeFiles/main.dir/test.cpp.obj: CXX_COMPILER__main_unscanned_Debug C$:/Users/wj/Desktop/code/project/Cache/test.cpp || cmake_object_order_depends_target_main
+  DEP_FILE = CMakeFiles\main.dir\test.cpp.obj.d
+  FLAGS = -g -std=gnu++17 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\main.dir
+  OBJECT_FILE_DIR = CMakeFiles\main.dir
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target Cache
+# Link build statements for EXECUTABLE target main
 
 
 #############################################
-# Link the executable Cache.exe
+# Link the executable main.exe
 
-build Cache.exe: CXX_EXECUTABLE_LINKER__Cache_Debug CMakeFiles/Cache.dir/main.cpp.obj CMakeFiles/Cache.dir/YCachePolicy.cpp.obj CMakeFiles/Cache.dir/YLFuCache.cpp.obj
+build main.exe: CXX_EXECUTABLE_LINKER__main_Debug CMakeFiles/main.dir/test.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
-  OBJECT_DIR = CMakeFiles\Cache.dir
+  OBJECT_DIR = CMakeFiles\main.dir
   POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = Cache.exe
-  TARGET_IMPLIB = libCache.dll.a
-  TARGET_PDB = Cache.exe.dbg
+  TARGET_FILE = main.exe
+  TARGET_IMPLIB = libmain.dll.a
+  TARGET_PDB = main.exe.dbg
 
 
 #############################################
@@ -111,7 +99,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build Cache: phony Cache.exe
+build main: phony main.exe
 
 # =============================================================================
 # Folder targets.
@@ -121,7 +109,7 @@ build Cache: phony Cache.exe
 #############################################
 # Folder: C:/Users/wj/Desktop/code/project/Cache/cmake-build-debug
 
-build all: phony Cache.exe
+build all: phony main.exe
 
 # =============================================================================
 # Built-in targets
