@@ -233,9 +233,9 @@ namespace YCache {
 
     //哈希分片优化
     template<typename Key, typename Value>
-    class YHashLRuCache{
+    class YHashLFuCache{
     public:
-        YHashLRuCache(int capacity,int sliceNum,int maxAverageNum=10):capacity_(capacity),sliceNum_(sliceNum) {
+        YHashLFuCache(int capacity,int sliceNum,int maxAverageNum=10):capacity_(capacity),sliceNum_(sliceNum) {
             for(int i=0;i<sliceNum_;++i) {
                 hashlfucaches_.emplace_back(std::make_unique<YLFuCache<Key,Value>>(capacity/sliceNum,maxAverageNum));
             }

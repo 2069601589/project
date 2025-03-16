@@ -10,7 +10,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 file(GLOB SOURCES "*.cpp")
 
 # 设置目标可执行文件
-add_executable(main ${SOURCES})
+add_executable(main ${SOURCES}
+        YLRuCache.h)
 
 # 清理中间的 .o 文件
 set_target_properties(main PROPERTIES CLEAN_DIRECT_OUTPUT 1)
