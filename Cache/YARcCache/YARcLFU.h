@@ -89,7 +89,7 @@ namespace YCache {
             node->incrementAccessCount();
             size_t newFreq=node->getAccessCount();
             //如果不存在该频次的链表，则创建
-            if(!freMap_.find(newFreq)==freMap_.end()) {
+            if(freMap_.find(newFreq)==freMap_.end()) {
                 freMap_[newFreq]=std::list<NodePtr>();
             }
             freMap_[newFreq].push_back(node);
@@ -135,21 +135,21 @@ namespace YCache {
         }
 
         void removeOldestGhost() {
-            NodePtr oldestGhost=ghostHead_->next;
+            NodePtr oldestGhost=ghostHead_->next_;
             if(oldestGhost!=ghostTail_) {
                 removeFromGhost(oldestGhost);
                 ghostMap_.erase(oldestGhost->getKey());
             }
         }
         void removeFromGhost(NodePtr node) {
-            node->prev->next=node->next;
-            node->next->prev=node->prev;
+            node->prev_->next_=node->next_;
+            node->next_->prev_=node->prev_;
         }
         void addToGhost(NodePtr node) {
-            node->next=ghostTail_;
-            node->prev=ghostTail_->prev;
-            ghostTail_->prev->next=node;
-            ghostTail_->prev=node;
+            node->next_=ghostTail_;
+            node->prev_=ghostTail_->prev_;
+            ghostTail_->prev_->next_=node;
+            ghostTail_->prev_=node;
             ghostMap_[node->getKey()]=node;
         }
 

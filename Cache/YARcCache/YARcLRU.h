@@ -87,14 +87,13 @@ namespace YCache {
         }
         void removeNode(NodePtr node) {
             if(!node || !mainHead_ || !mainTail_) return;
-            if(!node->pre_ || !node->next_) return;
-            node->pre_->next_=node->next_;
-            node->next_->pre_=node->pre_;
+            node->prev_->next_=node->next_;
+            node->next_->prev_=node->prev_;
         }
         void addToFront(NodePtr node) {
-            node->pre_=mainHead_;
+            node->prev_=mainHead_;
             node->next_=mainHead_->next_;
-            mainHead_->next_->pre_=node;
+            mainHead_->next_->prev_=node;
             mainHead_->next_=node;
         }
 
@@ -114,12 +113,12 @@ namespace YCache {
 
         bool removeLeastNode() {
             //找到最少访问的节点
-            NodePtr leastNode=mainTail_->pre;
+            NodePtr leastNode=mainTail_->prev_;
             if(leastNode==mainHead_) return false;
             //从双向链表中删除
             removeNode(leastNode);
             //在哈希表中删除
-            mainMap_.earse(leastNode->getKey());
+            mainMap_.erase(leastNode->getKey());
 
             //加入ghostMap
             if(ghostMap_.size()==ghostCapacity_) {
@@ -130,19 +129,19 @@ namespace YCache {
         }
 
         void removeOldestGhost() {
-            NodePtr oldestGhost=ghostTail_->pre_;
+            NodePtr oldestGhost=ghostTail_->prev_;
             if(oldestGhost!=ghostTail_) {
-                removeNDoe(oldestGhost);
+                removeNode(oldestGhost);
                 ghostMap_.erase(oldestGhost->getKey());
             }
         }
 
         void addToGhost(NodePtr node) {
-            node->accessCount=1;
+            node->accessCount_=1;
 
-            node->pre_=ghostHead_;
+            node->prev_=ghostHead_;
             node->next_=ghostHead_->next_;
-            ghostHead_->next_->pre_=node;
+            ghostHead_->next_->prev_=node;
             ghostHead_->next_=node;
 
             ghostMap_[node->getKey()]=node;

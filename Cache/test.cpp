@@ -118,8 +118,63 @@ void testLoopData() {
     std::cout << "=== 测试场景2结束 ===" << std::endl;
 }
 
+void testShiftData() {
+    std::cout << "\n=== 测试场景3：工作负载剧烈变化测试 ===" << std::endl;
+    const int CAPACITY = 50; //增加缓存容量
+    const int OPERATIONS = 100000; //操作次数
+
+    YCache::YHashLFuCache<int, std::string> lfu(CAPACITY);
+    YCache::YLRuKCache<int, std::string> lru(CAPACITY);
+    YCache::YARcCache<int, std::string> arc(CAPACITY);
+    std::array<YCache::YCachePolicy<int, std::string> *, 3> caches = {&lfu, &lru,&arc};
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    std::vector<int> hits(3, 0);
+    std::vector<int> get_operations(3, 0);
+    for(int i=0;i<caches.size();i++) {
+        for(int key=0;key<1000;key++) {
+            std::string value = "init" + std::to_string(key);
+            caches[i]->put(key,value);
+        }
+        for(int op=0;op<OPERATIONS;op++) {
+            int key;
+            if(op<OPERATIONS/5) { //热点数据
+                key = gen()%5;
+            }else if(op<OPERATIONS/5*2) {  //大范围随机
+                key = gen()%1000;
+            }else if(op<OPERATIONS/5*3) {  //顺序扫描
+                key = (op-OPERATIONS/5*2)%100;
+            }else if(op<OPERATIONS/5*4) {  //局部随机
+                int locality = (op/1000)%10;
+                key = locality*20+(gen()%20);
+            }else {  //混合
+                int r = gen()%100;
+                if(r<30) {
+                    key = gen()%5;
+                }else if(r<60) {
+                    key = 5+(gen()%95);
+                }else {
+                    key = 100+(gen()%900);
+                }
+            }
+            std::string result;
+            get_operations[i]++;
+            if(caches[i]->get(key,result)) {
+                hits[i]++;
+            }
+            //随机30%put
+            if(gen()%100<30) {
+                std::string value = "new" + std::to_string(key);
+                caches[i]->put(key,value);
+            }
+        }
+    }
+    printResult(CAPACITY, get_operations, hits);
+    std::cout << "=== 测试场景3结束 ===" << std::endl;
+}
 int main() {
     testHotData();
     testLoopData();
+    testShiftData();
     return 0;
 }
