@@ -96,7 +96,11 @@
 			"name" : "Header Files",
 			"sourceIndexes" : 
 			[
-				1
+				1,
+				2,
+				3,
+				4,
+				5
 			]
 		}
 	],
@@ -111,6 +115,26 @@
 		{
 			"backtrace" : 1,
 			"path" : "YLRuCache.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "YARcCache/YARcCacheNode.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "YARcCache/YARcLRU.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "YARcCache/YARcLFU.h",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 1,
+			"path" : "YARcCache/YARcCache.h",
 			"sourceGroupIndex" : 1
 		}
 	],

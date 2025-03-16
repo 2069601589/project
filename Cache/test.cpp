@@ -8,6 +8,7 @@
 #include "YCachePolicy.h"
 #include "YLFuCache.h"
 #include "YLRuCache.h"
+#include "YARcCache/YARcCache.h"
 
 //辅助函数，输出结果
 void printResult(int capacity, const std::vector<int> &get_operations, const std::vector<int> &hits) {
@@ -15,6 +16,8 @@ void printResult(int capacity, const std::vector<int> &get_operations, const std
     std::cout << "LFU - 命中率: " << std::fixed << std::setprecision(2) << (100.0 * hits[0] / get_operations[0]) << "%" <<
             std::endl;
     std::cout << "LRU - 命中率: " << std::fixed << std::setprecision(2) << (100.0 * hits[1] / get_operations[1]) << "%" <<
+            std::endl;
+    std::cout << "ARC - 命中率: " << std::fixed << std::setprecision(2) << (100.0 * hits[2] / get_operations[2]) << "%" <<
             std::endl;
 }
 
@@ -25,13 +28,14 @@ void testHotData() {
     const int HOT_KEYS = 20; //热点数据的数量
     const int COLD_KEYS = 5000; //冷数据数量
 
-    YCache::YLFuCache<int, std::string> lfu(CAPACITY);
-    YCache::YHashLRuCache<int, std::string> lru(CAPACITY);
-    std::array<YCache::YCachePolicy<int, std::string> *, 2> caches = {&lfu, &lru};
+    YCache::YHashLFuCache<int, std::string> lfu(CAPACITY,10);
+    YCache::YLRuKCache<int, std::string> lru(CAPACITY);
+    YCache::YARcCache<int, std::string> arc(CAPACITY);
+    std::array<YCache::YCachePolicy<int, std::string> *, 3> caches = {&lfu, &lru,&arc};
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::vector<int> hits(2, 0);
-    std::vector<int> get_operations(2, 0);
+    std::vector<int> hits(3, 0);
+    std::vector<int> get_operations(3, 0);
      for (int i = 0; i < caches.size(); i++) {
         //先进行一系列put操作
         for (int j = 0; j < OPERATIONS; ++j) {
@@ -71,13 +75,14 @@ void testLoopData() {
     const int LOOP_SIZE = 500; //循环次数
     const int OPERATIONS = 500000; //操作次数
 
-    YCache::YLFuCache<int, std::string> lfu(CAPACITY);
-    YCache::YLRuCache<int, std::string> lru(CAPACITY);
-    std::array<YCache::YCachePolicy<int, std::string> *, 2> caches = {&lfu, &lru};
+    YCache::YHashLFuCache<int, std::string> lfu(CAPACITY);
+    YCache::YLRuKCache<int, std::string> lru(CAPACITY);
+    YCache::YARcCache<int, std::string> arc(CAPACITY);
+    std::array<YCache::YCachePolicy<int, std::string> *, 3> caches = {&lfu, &lru,&arc};
     std::random_device rd;
     std::mt19937 gen(rd());
-    std::vector<int> hits(2, 0);
-    std::vector<int> get_operations(2, 0);
+    std::vector<int> hits(3, 0);
+    std::vector<int> get_operations(3, 0);
 
     for (int i = 0; i < caches.size(); i++) {
         //先进行一系列put操作

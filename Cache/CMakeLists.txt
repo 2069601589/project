@@ -11,7 +11,11 @@ file(GLOB SOURCES "*.cpp")
 
 # 设置目标可执行文件
 add_executable(main ${SOURCES}
-        YLRuCache.h)
+        YLRuCache.h
+        YARcCache/YARcCacheNode.h
+        YARcCache/YARcLRU.h
+        YARcCache/YARcLFU.h
+        YARcCache/YARcCache.h)
 
 # 清理中间的 .o 文件
 set_target_properties(main PROPERTIES CLEAN_DIRECT_OUTPUT 1)

@@ -11,21 +11,21 @@ namespace YCache {
     template<typename Key, typename Value>
     class Node {
     private:
-        Key key;
-        Value value;
-        std::shared_ptr<Node> pre;
-        std::shared_ptr<Node> next;
+        Key key_;
+        Value value_;
+        std::shared_ptr<Node> prev_;
+        std::shared_ptr<Node> next_;
 
     public:
-        Node() : pre(nullptr), next(nullptr) {
+        Node() : prev_(nullptr), next_(nullptr) {
         }
 
-        Node(Key key, Value value) : key(key), value(value), pre(nullptr), next(nullptr) {
+        Node(Key key, Value value) : key_(key), value_(value), prev_(nullptr), next_(nullptr) {
         }
 
-        Key getKey() const { return key; }
-        Value getValue() const { return value; }
-        void setValue(const Value &value) { this->value = value; }
+        Key getKey() const { return key_; }
+        Value getValue() const { return value_; }
+        void setValue(const Value &value) { this->value_ = value; }
         friend class YLRuCache<Key, Value>;
     };
 
@@ -48,7 +48,7 @@ namespace YCache {
             std::lock_guard<std::mutex> lock(mutex_);
             auto it = nodeMap_.find(key);
             if (it != nodeMap_.end()) {
-                it->second->value = value;
+                it->second->value_ = value;
                 moveToTail(it->second);
             } else {
                 addNewNode(key, value);
@@ -60,7 +60,7 @@ namespace YCache {
             auto it = nodeMap_.find(key);
             if (it != nodeMap_.end()) {
                 moveToTail(it->second);
-                value = it->second->value;
+                value = it->second->value_;
                 return true;
             }
             return false;
@@ -99,17 +99,17 @@ namespace YCache {
     void YLRuCache<Key, Value>::initialization() {
         dummyHead_ = std::make_shared<Node<Key, Value> >(Key(), Value());
         dummyTail_ = std::make_shared<Node<Key, Value> >(Key(), Value());
-        dummyHead_->next = dummyTail_;
-        dummyTail_->pre = dummyHead_;
+        dummyHead_->next_ = dummyTail_;
+        dummyTail_->prev_ = dummyHead_;
     }
 
     template<typename Key, typename Value>
     void YLRuCache<Key, Value>::addToTail(NodePtr node) {
         if (!node || !dummyHead_ || !dummyTail_) return;
-        node->pre = dummyTail_->pre;
-        node->next = dummyTail_;
-        dummyTail_->pre->next = node;
-        dummyTail_->pre = node;
+        node->prev_ = dummyTail_->prev_;
+        node->next_ = dummyTail_;
+        dummyTail_->prev_->next_ = node;
+        dummyTail_->prev_ = node;
     }
 
     template<typename Key, typename Value>
@@ -125,14 +125,14 @@ namespace YCache {
     template<typename Key, typename Value>
     void YLRuCache<Key, Value>::removeNode(NodePtr node) {
         if (!node) return;
-        node->pre->next = node->next;
-        node->next->pre = node->pre;
+        node->prev_->next_ = node->next_;
+        node->next_->prev_ = node->prev_;
     }
 
     template<typename Key, typename Value>
     void YLRuCache<Key, Value>::removeHead() {
-        if (dummyHead_->next == dummyTail_) return;
-        NodePtr node = dummyHead_->next;
+        if (dummyHead_->next_ == dummyTail_) return;
+        NodePtr node = dummyHead_->next_;
         removeNode(node);
         nodeMap_.erase(node->getKey());
     }
@@ -148,7 +148,7 @@ namespace YCache {
     template <typename Key, typename Value>
     class YLRuKCache : public YLRuCache<Key, Value> {
     public:
-        explicit YLRuKCache(int capacity) : YLRuKCache<Key, Value>(capacity,3*capacity,2) {}
+        explicit YLRuKCache(int capacity) : YLRuKCache<Key, Value>(capacity,5*capacity,2) {}
         YLRuKCache(int capacity,int historyCapacity,int k)
         :YLRuCache<Key,Value>(capacity),historyList_(std::make_unique<YLRuCache<Key,size_t> >(historyCapacity)),k_(k) {}
         void put(Key key,Value value) {
@@ -169,9 +169,9 @@ namespace YCache {
             return YLRuCache<Key,Value>::get(key,value);
         }
         Value get(Key key) {
-            int historyCount = historyList_->get(key);
-            historyList_->put(key,++historyCount);
-            return YLRuCache<Key,Value>::get(key);
+            Value value;
+            get(key,value);
+            return value;
         }
     private:
         size_t k_; // 进入缓存队列的评判标准

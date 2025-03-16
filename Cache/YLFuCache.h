@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "YCachePolicy.h"
+#include "YLRuCache.h"
 
 namespace YCache {
     template<typename Key, typename Value>
@@ -233,22 +234,24 @@ namespace YCache {
 
     //哈希分片优化
     template<typename Key, typename Value>
-    class YHashLFuCache{
+    class YHashLFuCache : public YCachePolicy<Key,Value>{
     public:
+        explicit YHashLFuCache(int capacity):YHashLFuCache(capacity,5,10){}
+        //YHashLFuCache(int capacity, int sliceNum):YHashLFuCache(capacity,sliceNum,10){}
         YHashLFuCache(int capacity,int sliceNum,int maxAverageNum=10):capacity_(capacity),sliceNum_(sliceNum) {
             for(int i=0;i<sliceNum_;++i) {
                 hashlfucaches_.emplace_back(std::make_unique<YLFuCache<Key,Value>>(capacity/sliceNum,maxAverageNum));
             }
         }
-        void put(Key key,Value value) {
+        void put(Key key,Value value) override {
             size_t hashValue = Hash(key)%sliceNum_;
             hashlfucaches_[hashValue]->put(key,value);
         }
-        bool get(Key key,Value &value) {
+        bool get(Key key,Value &value) override {
             size_t hashValue = Hash(key)%sliceNum_;
             return hashlfucaches_[hashValue]->get(key,value);
         }
-        Value get(Key key) {
+        Value get(Key key) override {
             Value value;
             get(key,value);
             return value;
