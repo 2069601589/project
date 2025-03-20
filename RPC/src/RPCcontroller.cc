@@ -17,3 +17,5 @@ void RPCcontroller::SetFailed(const std::string&reason){
     m_errText=reason;
 };
 std::string RPCcontroller::ErrText(){ return m_errText;};
+
+//todo 取消调用

@@ -5,7 +5,7 @@ void RPCconfig::loadConfig(const char *configFile)
 {
     // 用智能指针管理文件指针
     std::unique_ptr<FILE, decltype(&fclose)> pf(
-        fopen(config_file, "r"),  // 打开配置文件
+        fopen(configFile, "r"),  // 打开配置文件
         &fclose  // 文件关闭函数
     );
     // 打开失败
