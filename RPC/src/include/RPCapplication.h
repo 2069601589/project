@@ -1,6 +1,8 @@
 #ifndef _RPCapplication_H
 #define _RPCapplication_H
 #include "RPCconfig.h"
+#include "RPCchannel.h"
+#include  "RPCcontroller.h"
 #include <mutex>
 class RPCapplication
 {
@@ -14,8 +16,8 @@ private:
     static RPCconfig m_config;
     static RPCapplication *m_application;
     static std::mutex m_mutex;
-    RPCapplication();
-    ~RPCapplication();
+    RPCapplication(){}
+    ~RPCapplication(){}
     RPCapplication(const RPCapplication&)=delete;
     RPCapplication(RPCapplication&&)=delete;
 };

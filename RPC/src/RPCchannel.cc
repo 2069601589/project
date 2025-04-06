@@ -110,8 +110,11 @@ bool RPCchannel::NewConnect(const char *ip, uint16_t port){
 std::string RPCchannel::QueryServerHost(ZkClient *zkClient, std::string service_name, std::string method_name, int &idex){
     std::string method_path="/"+service_name+"/"+method_name;
     std::cout<<"method_path: "<<method_path<<std::endl;
-    std::unique_lock lock(g_data_mutex);
+    //上锁
+    std::unique_lock<std::mutex> lock(g_data_mutex);
+    
     std::string host_data=zkClient->GetData(method_path.c_str());
+    //开锁
     lock.unlock();
     if(host_data=="") return "";
     idex=host_data.find(":"); 

@@ -1,7 +1,5 @@
 #ifndef RPCCONFIG_H
 #define RPCCONFIG_H
-
-#include <iostream>
 #include <string>
 #include <map>
 class RPCconfig

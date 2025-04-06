@@ -11,9 +11,9 @@ public:
     ~ZkClient();
     void Start();
     void Create(const char *path,const char *data, int datalen, int state = 0);
-    std::string GetData(char *path);
+    std::string GetData(const char *path);
 
 private:
-    zhandle_t *zkhandle;
+    zhandle_t *m_zhandle;
 };
 #endif
