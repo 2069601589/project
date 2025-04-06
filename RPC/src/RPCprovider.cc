@@ -8,49 +8,65 @@ RPCprovider::~RPCprovider()
     std::cout << "退出" << std::endl;
     event_loop.quit();
 };
-
+//提供给外部使用，注册服务对象和方法
 void RPCprovider::NotifySevice(google::protobuf::Service *service)
 {
+    //参数为protobuf派生类的基类，可以使用一个基类指针指向不同的派生类，实现动态多态
+    //通过service_info保存服务的对象和方法的名称
     ServiceInfo service_info;
+    //GetDescriptor()获取服务类的信息
     const google::protobuf::ServiceDescriptor *psd = service->GetDescriptor();
+    //服务名
     std::string service_name = psd->name();
     std::cout << "service_name:" << service_name << std::endl;
+    //方法数量
     int method_count = psd->method_count();
     for (int i = 0; i < method_count; i++)
     {
         const google::protobuf::MethodDescriptor *pmd = psd->method(i);
+        //获取方法名
         std::string method_name = pmd->name();
         std::cout << "method_name:" << method_name << std::endl;
         service_info.method_map.emplace(method_name, pmd);
     }
     service_info.service = service;
+    //记录所有的服务对象和方法
     service_map.emplace(service_name, service_info);
 };
 
 void RPCprovider::Run()
 {
+    //获取ip和端口号
     std::string ip = RPCapplication::GetInstance().getConfig().load("rpcserverip");
     int port = stoi(RPCapplication::GetInstance().getConfig().load("rpcserverport"));
+    //创建地址对象
     muduo::net::InetAddress address(ip, port);
-    std::shared_ptr<muduo::net::TcpServer> server = std::make_shared<muduo::net::TcpServer>(&event_loop, address, "KrpcProvider");
-    server->setConnectionCallback([this](const muduo::net::TcpConnectionPtr &conn)
-                                  { onConnection(conn); });
-    server->setMessageCallback([this](const auto &conn, auto *buffer, auto time)
-                               { onMessage(conn, buffer, time); });
+    //share_ptr创建server对象
+    std::shared_ptr<muduo::net::TcpServer> server = std::make_shared<muduo::net::TcpServer>(&event_loop, address, "rpcProvider");
+    //设置回调函数
+    server->setConnectionCallback(std::bind(&RPCprovider::onConnection, this, std::placeholders::_1));
+    server->setMessageCallback(std::bind(&RPCprovider::onMessage, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    //设置线程数量
     server->setThreadNum(4);
 
     // 把RPC的服务全部注册到zookeeper上
     ZkClient zkClient;
+    //连接zookeeper服务器
     zkClient.Start();
     for (auto &sp : service_map)
     {
+        //服务名
         std::string service_path = "/" + sp.first;
+        //为每个服务创建一个节点
+        //服务是永久节点
         zkClient.Create(service_path.c_str(), nullptr, 0);
         for (auto &mp : sp.second.method_map)
         {
+            //方法路径
             std::string method_path = service_path + "/" + mp.first;
             char method_path_data[128] = {0};
             sprintf(method_path_data, "%s:%d", ip.c_str(), port); // 将IP和端口信息存入节点数据
+            //方法是临时节点，服务器断开就注销，防止客户端获取到不可用节点
             zkClient.Create(method_path.c_str(), method_path_data, strlen(method_path_data), ZOO_EPHEMERAL);
         }
     }
